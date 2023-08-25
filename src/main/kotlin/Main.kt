@@ -169,9 +169,9 @@ fun main() {
     if (menuDipilih != null) {
 
         val orderServices = OrderServices(menuDipilih)
-        val statusPembayaran = orderServices.pembayaran()
+        val sudahBayar = orderServices.pembayaran()
 
-        if(statusPembayaran) {
+        if(sudahBayar) {
             val pengirimanServices = PengirimanServices()
             pengirimanServices.showMetodePengiriman()
             pengirimanServices.processPengiriman()
