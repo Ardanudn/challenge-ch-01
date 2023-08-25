@@ -50,22 +50,36 @@ class MenuServices() {
 //digunakan untuk melakukan hal" yang berkaitan dengan order yaitu pembayaran dan pemilihan metode pengiriman.
 class OrderServices(private val menuDipilih: MenuMakan) {
 
+    private val hargaMenu = menuDipilih.harga
+
     //    function pembayaran yang mengembalikan nilai boolean dari inputan user
-    fun pembayaran() {
+    fun pembayaran(): Boolean {
         println()
         print("Masukan Pembayaran : ")
         val pembayaran = readlnOrNull()?.toIntOrNull()
 
 //        pengecekan apakah inputan user tidak sama dengan null dan lebih dari harga menu yang dipilih
-        if (pembayaran != null && pembayaran >= menuDipilih.harga) {
-            println("Terima kasih, Anda berhasil memesan makanan")
+        if (pembayaran != null) {
+            when {
+                pembayaran == hargaMenu -> println("Terima kasih, Anda berhasil memesan makanan")
+                pembayaran > hargaMenu -> {
+                    val kembalian = pembayaran - menuDipilih.harga
+                    println("Terima kasih, Anda berhasil memesan makanan")
+                    println("Kembalian : $kembalian")
 
+                }
+                pembayaran < menuDipilih.harga -> {
+                    println("Maaf, uang anda tidak mencukupi... Silahkan ulangi pembayaran")
+                    pembayaran()
+                }
+            }
         } else {
             println("Maaf, pembayaran Anda gagal!")
-
+            return false
         }
-    }
 
+        return true
+    }
 
 }
 
@@ -155,12 +169,13 @@ fun main() {
     if (menuDipilih != null) {
 
         val orderServices = OrderServices(menuDipilih)
-        orderServices.pembayaran()
+        val statusPembayaran = orderServices.pembayaran()
 
-        val pengirimanServices = PengirimanServices()
-        pengirimanServices.showMetodePengiriman()
-        pengirimanServices.processPengiriman()
-
+        if(statusPembayaran) {
+            val pengirimanServices = PengirimanServices()
+            pengirimanServices.showMetodePengiriman()
+            pengirimanServices.processPengiriman()
+        }
 
     } else {
         println("Pilihan menu tidak valid!")
